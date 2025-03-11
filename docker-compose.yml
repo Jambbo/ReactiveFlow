@@ -1,0 +1,40 @@
+networks:
+  reactiveflow:
+    driver: bridge
+
+volumes:
+  appdata-data:
+    driver: local
+
+services:
+  reactive-flow:
+    image: reactive-flow:latest
+    env_file:
+      - .env
+    build:
+      context: .
+      dockerfile: Dockerfile
+    deploy:
+      mode: replicated
+      replicas: 3
+    ports:
+      - "8080"
+    networks:
+      - reactiveflow
+    depends_on:
+      - appdata
+
+  appdata:
+    image: postgres:17.4-alpine
+    container_name: appdata
+    environment:
+      - POSTGRES_USER=${R2DBC_USERNAME}
+      - POSTGRES_PASSWORD=${R2DBC_PASSWORD}
+      - PGDATA=/data/postgres
+      - POSTGRES_DB=appdata
+    ports:
+      - "5440:5432"
+    volumes:
+      - appdata-data:/data/postgres
+    networks:
+      - reactiveflow
