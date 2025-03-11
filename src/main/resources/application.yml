@@ -1,0 +1,25 @@
+spring:
+  r2dbc:
+    url: ${R2DBC_HOST}
+    username: postgres
+    password: postgres
+  flyway:
+    url: ${HOST}
+    user: postgres
+    password: postgres
+    locations: classpath:db/migration
+  config:
+    import: optional:file:.env[.properties]
+  cloud:
+    aws:
+      credentials:
+        access-key: ${ACCESS_KEY}
+        secret-key: ${SECRET_KEY}
+      region:
+        static: eu-west-1
+
+sqs:
+  notifications:
+    queue:
+      name: NotificationsQueue.fifo
+      region: eu-west-1
